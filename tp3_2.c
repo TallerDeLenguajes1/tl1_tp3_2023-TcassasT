@@ -5,12 +5,15 @@
 // Constantes
 #define ANIOS 5
 #define MESES 12
+#define MIN 10000
+#define MAX 50000
 
 // Funciones
 int getNumeroRandom();
 int ** getMatrizProduccion();
 void mostrarMatrizProduccion(int ** matrizProduccion);
 void mostrarPromedioGananciaPorAnio(int ** matrizProduccion);
+void obtenerMaxYMinAnioMes(int ** matrizProduccion);
 
 int main() {
   // Seed al rand() para que devuelva valores distintos
@@ -23,12 +26,13 @@ int main() {
 
   mostrarPromedioGananciaPorAnio(matrizProduccion);
 
+  obtenerMaxYMinAnioMes(matrizProduccion);
+
   return 0;
 }
 
 int getNumeroRandom() {
-  int min = 100000, max = 500000;
-  return (rand() % (max - min)) + min + 1;
+  return (rand() % (MAX - MIN)) + MIN + 1;
 }
 
 int ** getMatrizProduccion() {
@@ -50,14 +54,16 @@ void mostrarMatrizProduccion(int ** matrizProduccion) {
   int i, j;
 
   for(i = 0; i < ANIOS; i++) {
-    printf("Año %d\n", i + 1);
+    printf("Año %d:\n", i + 1);
 
     for(j = 0; j < MESES; j++) {
       printf("%d ", *(*(matrizProduccion + i) + j));
     }
 
-    printf("\n\n");
+    printf("\n");
   }
+
+  printf("\n");
 }
 
 void mostrarPromedioGananciaPorAnio(int ** matrizProduccion) {
@@ -72,5 +78,32 @@ void mostrarPromedioGananciaPorAnio(int ** matrizProduccion) {
     }
 
     printf("Promedio año %d: %.2f \n", i + 1, ((float) promedioContador) / MESES);
+  }
+
+  printf("\n");
+}
+
+void obtenerMaxYMinAnioMes(int ** matrizProduccion) {
+  int i, j;
+
+  for(i = 0; i < ANIOS; i++) {
+    int indiceMesMayor = 0, menorEncontrado = MAX;
+    int indiceMesMenor = 0, mayorEncontrado = 0;
+
+    for(j = 0; j < MESES; j++) {
+      int produccionDeMes = *(*(matrizProduccion + i) + j);
+
+      if(produccionDeMes >= mayorEncontrado) {
+        mayorEncontrado = produccionDeMes;
+        indiceMesMayor = j;
+      }
+
+      if(produccionDeMes <= menorEncontrado) {
+        menorEncontrado = produccionDeMes;
+        indiceMesMenor = j;
+      }
+    }
+
+    printf("Año %d - Menor (mes %d) %d, Mayor (mes %d): %d\n", i + 1, indiceMesMenor + 1, menorEncontrado, indiceMesMayor + 1, mayorEncontrado);
   }
 }
