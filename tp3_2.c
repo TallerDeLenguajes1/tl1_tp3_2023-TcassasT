@@ -14,6 +14,7 @@ int ** getMatrizProduccion();
 void mostrarMatrizProduccion(int ** matrizProduccion);
 void mostrarPromedioGananciaPorAnio(int ** matrizProduccion);
 void obtenerMaxYMinAnioMes(int ** matrizProduccion);
+void freeMatriz(int ** matrizProduccion);
 
 int main() {
   // Seed al rand() para que devuelva valores distintos
@@ -27,6 +28,8 @@ int main() {
   mostrarPromedioGananciaPorAnio(matrizProduccion);
 
   obtenerMaxYMinAnioMes(matrizProduccion);
+
+  freeMatriz(matrizProduccion);
 
   return 0;
 }
@@ -106,4 +109,14 @@ void obtenerMaxYMinAnioMes(int ** matrizProduccion) {
 
     printf("Año %d - Menor (mes %d) %d, Mayor (mes %d): %d\n", i + 1, indiceMesMenor + 1, menorEncontrado, indiceMesMayor + 1, mayorEncontrado);
   }
+}
+
+void freeMatriz(int ** matrizProduccion) {
+  int i;
+
+  for(i = 0; i < ANIOS; i++) {
+    free(*(matrizProduccion + i));
+  }
+
+  free(matrizProduccion);
 }
