@@ -8,17 +8,17 @@
 
 // Funciones
 int getNumeroRandom();
-int ** getMatrizProduccion(int anios, int meses);
-void mostrarMatrizProduccion(int ** matrizProduccion, int anios, int meses);
+int ** getMatrizProduccion();
+void mostrarMatrizProduccion(int ** matrizProduccion);
 
 int main() {
   // Seed al rand() para que devuelva valores distintos
   srand(time(NULL));
 
   // Desarrollo
-  int ** matrizProduccion = getMatrizProduccion(ANIOS, MESES);
+  int ** matrizProduccion = getMatrizProduccion();
 
-  mostrarMatrizProduccion(matrizProduccion, ANIOS, MESES);
+  mostrarMatrizProduccion(matrizProduccion);
 
   return 0;
 }
@@ -28,12 +28,12 @@ int getNumeroRandom() {
   return (rand() % (max - min)) + min + 1;
 }
 
-int ** getMatrizProduccion(int anios, int meses) {
-  int ** matrizProduccion = (int **)malloc(anios * sizeof(int *));
+int ** getMatrizProduccion() {
+  int ** matrizProduccion = (int **) malloc(ANIOS * sizeof(int *));
   int i, j;
 
   for(i = 0; i < ANIOS; i++) {
-    matrizProduccion[i] = (int *)malloc(meses * sizeof(int));
+    matrizProduccion[i] = (int *) malloc(MESES * sizeof(int));
 
     for(j = 0; j < MESES; j++) {
       matrizProduccion[i][j] = getNumeroRandom();
@@ -43,13 +43,13 @@ int ** getMatrizProduccion(int anios, int meses) {
   return matrizProduccion;
 }
 
-void mostrarMatrizProduccion(int ** matrizProduccion, int anios, int meses) {
+void mostrarMatrizProduccion(int ** matrizProduccion) {
   int i, j;
 
-  for(i = 0; i < anios; i++) {
+  for(i = 0; i < ANIOS; i++) {
     printf("Año %d\n", i + 1);
 
-    for(j = 0; j < meses; j++) {
+    for(j = 0; j < MESES; j++) {
       printf("%d ", *(*(matrizProduccion + i) + j));
     }
 
