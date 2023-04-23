@@ -10,6 +10,7 @@
 int getNumeroRandom();
 int ** getMatrizProduccion();
 void mostrarMatrizProduccion(int ** matrizProduccion);
+void mostrarPromedioGananciaPorAnio(int ** matrizProduccion);
 
 int main() {
   // Seed al rand() para que devuelva valores distintos
@@ -19,6 +20,8 @@ int main() {
   int ** matrizProduccion = getMatrizProduccion();
 
   mostrarMatrizProduccion(matrizProduccion);
+
+  mostrarPromedioGananciaPorAnio(matrizProduccion);
 
   return 0;
 }
@@ -54,5 +57,20 @@ void mostrarMatrizProduccion(int ** matrizProduccion) {
     }
 
     printf("\n\n");
+  }
+}
+
+void mostrarPromedioGananciaPorAnio(int ** matrizProduccion) {
+  int i, j;
+  float promedios[ANIOS];
+
+  for(i = 0; i < ANIOS; i++) {
+    int promedioContador = 0;
+
+    for(j = 0; j < MESES; j++) {
+      promedioContador += *(*(matrizProduccion + i) + j);
+    }
+
+    printf("Promedio año %d: %.2f \n", i + 1, ((float) promedioContador) / MESES);
   }
 }
