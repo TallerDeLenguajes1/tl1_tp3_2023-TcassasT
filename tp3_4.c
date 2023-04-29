@@ -47,17 +47,17 @@ int main() {
 }
 
 void cargarClientes(Cliente * arrayDeClientes, int numeroDeClientes) {
-  char * buffer = (char *) malloc(100 * sizeof(char));
   fflush(stdin);
 
   int i, j;
   for(i = 0; i < numeroDeClientes; i++) {
+    char * buffer = (char *) malloc(100 * sizeof(char));
     // Asigna iterador como ClienteID
     arrayDeClientes[i].ClienteID = i;
 
     // Asigna nombre a cliente
     printf("Por favor ingrese el nombre del cliente N° %d:\n", i);
-    fgets(buffer, sizeof(buffer), stdin);
+    gets(buffer);
     arrayDeClientes[i].NombreCliente = (char *) malloc(100 * sizeof(char));
     strcpy(arrayDeClientes[i].NombreCliente, buffer);
 
@@ -89,7 +89,7 @@ void mostrarClientes(Cliente * arrayDeClientes, int numeroDeClientes) {
 
   for(i = 0; i < numeroDeClientes; i++) {
     Cliente clienteItem = arrayDeClientes[i];
-    printf("- Cliente N° %d Nombre: %s", clienteItem.ClienteID, clienteItem.NombreCliente);
+    printf("- Cliente N° %d Nombre: %s\n", clienteItem.ClienteID, clienteItem.NombreCliente);
     printf("Cantidad de productos: %d\n", clienteItem.CantidadProductosAPedir);
 
     printf("Productos :\n");
@@ -107,7 +107,7 @@ void mostrarClientes(Cliente * arrayDeClientes, int numeroDeClientes) {
       totalAPagar += totalProducto;
     }
 
-    printf("\tx Total a pagar: %.2f\n", totalAPagar);
+    printf("\tx Total a pagar: %.2f\n\n", totalAPagar);
   }
 }
 
