@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<time.h>
 
 // Enum de productos
 char * TiposProductos[] = { "Galletas", "Snack", "Cigarrillos", "Caramelos", "Bebidas" };
@@ -21,54 +22,103 @@ typedef struct Cliente {
 } Cliente;
 
 // Funciones
-void cargarClientes(Cliente * arrayClientes, int numeroDeClientes);
+void cargarClientes(Cliente * arrayDeClientes, int numeroDeClientes);
+void mostrarClientes(Cliente * arrayDeClientes, int numeroDeClientes);
+int getNumeroRandom(int min, int max);
+void freeClientes(Cliente * arrayDeClientes,int numeroDeClientes);
 
 int main() {
+  // Seed al rand() para que devuelva valores distintos
+  srand(time(NULL));
+
   int numeroDeClientes;
-  printf("Ingres el numero de clientes a cargar");
-  scanf("%d", &numeroDeClientes);
+  printf("Ingres el numero de clientes a cargar: ");
+  scanf("%d%*c", &numeroDeClientes); //<-- Si no ponía el %*c no podía ingresar el nombre del 1er cliente
 
   Cliente * arrayDeClientes = (Cliente *) malloc(numeroDeClientes * sizeof(Cliente *));
 
   cargarClientes(arrayDeClientes, numeroDeClientes);
 
+  mostrarClientes(arrayDeClientes, numeroDeClientes);
+
+  freeClientes(arrayDeClientes, numeroDeClientes);
+
   return 0;
 }
 
-void cargarClientes(Cliente * arrayClientes, int numeroDeClientes) {
+void cargarClientes(Cliente * arrayDeClientes, int numeroDeClientes) {
   char * buffer = (char *) malloc(100 * sizeof(char));
+  fflush(stdin);
 
   int i, j;
   for(i = 0; i < numeroDeClientes; i++) {
     // Asigna iterador como ClienteID
-    arrayClientes[i].ClienteID = i;
+    arrayDeClientes[i].ClienteID = i;
 
     // Asigna nombre a cliente
-    fflush(stdin);
-    printf("Por favor ingrese el nombre del cliente N° %d", i);
-    gets(buffer);
-    arrayClientes[i].NombreCliente = (char *) malloc(100 * sizeof(char));
-    strcpy(arrayClientes[i].NombreCliente, buffer);
+    printf("Por favor ingrese el nombre del cliente N° %d:\n", i);
+    fgets(buffer, sizeof(buffer), stdin);
+    arrayDeClientes[i].NombreCliente = (char *) malloc(100 * sizeof(char));
+    strcpy(arrayDeClientes[i].NombreCliente, buffer);
 
     // Asigna cantidad de productos a pedir
-    arrayClientes[i].CantidadProductosAPedir = (rand() % 5) + 1;
+    arrayDeClientes[i].CantidadProductosAPedir = getNumeroRandom(1, 5);
 
     // Crea productos
-    arrayClientes[i].Productos = (Producto *) malloc(arrayClientes[i].CantidadProductosAPedir * sizeof(Producto));
+    arrayDeClientes[i].Productos = (Producto *) malloc(arrayDeClientes[i].CantidadProductosAPedir * sizeof(Producto));
 
-    for(j = 0; j < arrayClientes[i].CantidadProductosAPedir; j++) {
+    for(j = 0; j < arrayDeClientes[i].CantidadProductosAPedir; j++) {
       // Asigna iterador como ProductoID
-      arrayClientes[i].Productos[j].ProductoID = j;
+      arrayDeClientes[i].Productos[j].ProductoID = j;
 
       // Asigna cantidad
-      arrayClientes[i].Productos[j].Cantidad = (rand() % 10) + 1;
+      arrayDeClientes[i].Productos[j].Cantidad = (rand() % 10) + 1;
 
       // Asigna tipo producto
-      arrayClientes[i].Productos[j].TipoProducto = (char *) malloc(100 * sizeof(char));
-      strcpy(arrayClientes[i].Productos[j].TipoProducto, TiposProductos[rand() % 5]);
+      arrayDeClientes[i].Productos[j].TipoProducto = (char *) malloc(100 * sizeof(char));
+      strcpy(arrayDeClientes[i].Productos[j].TipoProducto, TiposProductos[rand() % 5]);
 
       // Asigna precio unitario
-      arrayClientes[i].Productos[j].PrecioUnitario = (rand() % (100 - 10)) + 10;
+      arrayDeClientes[i].Productos[j].PrecioUnitario = ((float)rand() / RAND_MAX) * (100.0f - 10.0f) + 10.0f;
     }
   }
+}
+
+void mostrarClientes(Cliente * arrayDeClientes, int numeroDeClientes) {
+  int i;
+
+  for(i = 0; i < numeroDeClientes; i++) {
+    Cliente clienteItem = arrayDeClientes[i];
+    printf("- Cliente N° %d Nombre: %s", clienteItem.ClienteID, clienteItem.NombreCliente);
+    printf("Cantidad de productos: %d\n", clienteItem.CantidadProductosAPedir);
+
+    printf("Productos :\n");
+    int j;
+    for(j = 0; j < clienteItem.CantidadProductosAPedir; j++) {
+      Producto productoItem = clienteItem.Productos[j];
+      printf("\t- Producto N° %d (Tipo: %s)\n", productoItem.ProductoID, productoItem.TipoProducto);
+      printf("\tCantidad: %d\n", productoItem.Cantidad);
+      printf("\tPrecio unitario: %.2f\n", productoItem.PrecioUnitario);
+    }
+
+    printf("\n");
+  }
+}
+
+void freeClientes(Cliente * arrayDeClientes,int numeroDeClientes) {
+  int i, j;
+
+  for(i = 0; i < numeroDeClientes; i++) {
+    for(j = 0; j < arrayDeClientes[i].CantidadProductosAPedir; j++) {
+      free(arrayDeClientes[i].Productos[j].TipoProducto);
+    }
+    free(arrayDeClientes[i].Productos);
+    free(arrayDeClientes[i].NombreCliente);
+  }
+
+  free(arrayDeClientes);
+}
+
+int getNumeroRandom(int min, int max) {
+  return (rand() % (max - min)) + min + 1;
 }
