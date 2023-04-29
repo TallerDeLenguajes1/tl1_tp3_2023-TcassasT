@@ -24,7 +24,7 @@ typedef struct Cliente {
 // Funciones
 void cargarClientes(Cliente * arrayDeClientes, int numeroDeClientes);
 void mostrarClientes(Cliente * arrayDeClientes, int numeroDeClientes);
-int getNumeroRandom(int min, int max);
+float getTotalDeProducto(Producto producto);
 void freeClientes(Cliente * arrayDeClientes,int numeroDeClientes);
 
 int main() {
@@ -62,7 +62,7 @@ void cargarClientes(Cliente * arrayDeClientes, int numeroDeClientes) {
     strcpy(arrayDeClientes[i].NombreCliente, buffer);
 
     // Asigna cantidad de productos a pedir
-    arrayDeClientes[i].CantidadProductosAPedir = getNumeroRandom(1, 5);
+    arrayDeClientes[i].CantidadProductosAPedir = (rand() % (5 - 1)) + 1;
 
     // Crea productos
     arrayDeClientes[i].Productos = (Producto *) malloc(arrayDeClientes[i].CantidadProductosAPedir * sizeof(Producto));
@@ -94,14 +94,20 @@ void mostrarClientes(Cliente * arrayDeClientes, int numeroDeClientes) {
 
     printf("Productos :\n");
     int j;
+    float totalAPagar = 0;
     for(j = 0; j < clienteItem.CantidadProductosAPedir; j++) {
       Producto productoItem = clienteItem.Productos[j];
+      float totalProducto = getTotalDeProducto(productoItem);
+
       printf("\t- Producto N° %d (Tipo: %s)\n", productoItem.ProductoID, productoItem.TipoProducto);
       printf("\tCantidad: %d\n", productoItem.Cantidad);
       printf("\tPrecio unitario: %.2f\n", productoItem.PrecioUnitario);
+      printf("\tPrecio total del producto: %.2f\n\n", totalProducto);
+
+      totalAPagar += totalProducto;
     }
 
-    printf("\n");
+    printf("\tx Total a pagar: %.2f\n", totalAPagar);
   }
 }
 
@@ -119,6 +125,6 @@ void freeClientes(Cliente * arrayDeClientes,int numeroDeClientes) {
   free(arrayDeClientes);
 }
 
-int getNumeroRandom(int min, int max) {
-  return (rand() % (max - min)) + min + 1;
+float getTotalDeProducto(Producto producto) {
+  return producto.PrecioUnitario * producto.Cantidad;
 }
